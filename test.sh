@@ -17,13 +17,14 @@ elif [ "$type" = "m" ]; then
 elif [ "$type" = "b" ] || [ "$type" = "t" ] || [ "$type" = "v" ]; then
    echo "problem:"
    echo "\"s\" for sudoku"
+   echo "\"sg\" for generating sudoku"
    echo "\"s2\" for sudoku2"
+   echo "\"so\" for sudoku orientation"
+   echo "\"sgo\" for sudoku gen orientation"
    echo "\"q\" for n queens"
-   echo "\"g\" for generating sudoku"
-   echo "\"f\" for sudoku full"
    read problem
 
-   if [ "$problem" = "s" ] || [ "$problem" = "s2" ] || [ "$problem" = "f" ]; then
+   if [ "$problem" = "s" ] || [ "$problem" = "s2" ] || [ "$problem" = "so" ]; then
       echo "dimension? \"x\" \"y\""
       read x y
       
@@ -55,19 +56,19 @@ elif [ "$type" = "b" ] || [ "$type" = "t" ] || [ "$type" = "v" ]; then
          ./a.out q ${n}
       fi
    
-   elif [ "$problem" = "g" ]; then
+   elif [ "$problem" = "sg" ] || [ "$problem" = "sgo" ]; then
       echo "dimension? \"x\" \"y\""
       read x y
       
       if [ "$type" = "t" ]; then
-         time ./a.out g tests/${x}x${y}.txt ${x} ${y}
+         time ./a.out ${problem} tests/${x}x${y}.txt ${x} ${y}
 
       elif [ "$type" = "v" ]; then
-         valgrind --leak-check=full --error-exitcode=13 --track-origins=yes ./a.out g tests/${x}x${y}.txt ${x} ${y}
+         valgrind --leak-check=full --error-exitcode=13 --track-origins=yes ./a.out ${problem} tests/${x}x${y}.txt ${x} ${y}
 
       elif [ "$type" = "b" ]; then
          make
-         ./a.out g tests/${x}x${y}.txt ${x} ${y}
+         ./a.out ${problem} tests/${x}x${y}.txt ${x} ${y}
       fi
 
    fi

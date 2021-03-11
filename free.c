@@ -12,12 +12,12 @@ void freeDance(Dance *d)
    if(d->numSols > 0)
       freeTree(d->csol);
 
-   if(d->problem == SUDOKU || d->problem == SUDOKU2 || d->problem == SGEN || d->problem == SUDOKUF)
+   if(d->problem == SUDOKU || d->problem == SUDOKU2 || d->problem == SGEN || d->problem == SUDOKU_O || d->problem == SGEN_O)
       freeHide(d);
 
    HEUR_FREE(d)
 
-   if(d->problem == SUDOKU || d->problem == SUDOKU2 || d->problem == SGEN || d->problem == SUDOKUF)
+   if(d->problem == SUDOKU || d->problem == SUDOKU2 || d->problem == SGEN || d->problem == SUDOKU_O || d->problem == SGEN_O)
    {
       fclose(d->s->boardFile);
       free(d->s->grid);

@@ -6,8 +6,6 @@ a.out
 *.xml
 .vs/
 CppProperties.json
-workspace.code-workspace
 .vscode/
 unistd_io.h
-test.sh
 /tests

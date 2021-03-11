@@ -13,10 +13,12 @@ void parseArgs(Dance *d, int argc, char *argv[])
         d->problem = SUDOKU2;
     else if(!strcmp(argv[1], "q"))
         d->problem = NQUEENS;
-    else if(!strcmp(argv[1], "g"))
+    else if(!strcmp(argv[1], "sg"))
         d->problem = SGEN;
-    else if(!strcmp(argv[1], "f"))
-        d->problem = SUDOKUF;
+    else if(!strcmp(argv[1], "so"))
+        d->problem = SUDOKU_O;
+    else if(!strcmp(argv[1], "sgo"))
+        d->problem = SGEN_O;
     else
         arg1Error();
 
@@ -24,8 +26,9 @@ void parseArgs(Dance *d, int argc, char *argv[])
     {
         case SUDOKU:
         case SUDOKU2:
-        case SUDOKUF: parseArgs_Sudoku(d, argc, argv); break;
+        case SUDOKU_O: parseArgs_Sudoku(d, argc, argv); break;
         case NQUEENS: parseArgs_NQueens(d, argc, argv); break;
+        case SGEN_O:
         case SGEN: parseArgs_SGen(d, argc, argv); break;
     }
 }
@@ -68,15 +71,6 @@ void parseArgs_Sudoku(Dance *d, int argc, char *argv[])
     free(buf);
 }
 
-/* a.out q [n]  */
-void parseArgs_NQueens(Dance *d, int argc, char *argv[])
-{
-    if(argc != 3){
-        numArgError();}
-    if(1 != sscanf(argv[2], "%d", &d->nq))
-        invalidN_NQueens();
-}
-
 /* a.out sg [file] [x] [y] */
 void parseArgs_SGen(Dance *d, int argc, char *argv[])
 {
@@ -98,4 +92,13 @@ void parseArgs_SGen(Dance *d, int argc, char *argv[])
 
     /* print board dimensions at top of file */
     fprintf(d->s->boardFile, "%d %d\n", s->x, s->y);
+}
+
+/* a.out q [n]  */
+void parseArgs_NQueens(Dance *d, int argc, char *argv[])
+{
+    if(argc != 3){
+        numArgError();}
+    if(1 != sscanf(argv[2], "%d", &d->nq))
+        invalidN_NQueens();
 }

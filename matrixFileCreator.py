@@ -1,3 +1,12 @@
+import sys
+
+# copy of the define statements */
+SUDOKU = 0
+SUDOKU2 = 1
+NQUEENS = 2
+SGEN = 3
+SUDOKU_O = 4
+SGEN_O = 5
 
 fact = [1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800]
 
@@ -8,10 +17,10 @@ fact = [1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800]
 # of your solution stored. you can use printSolutions() in auxil.c to
 # print out all your solutions
 
-def initMatrixFile_Sudoku(x, y):
+def initMatrixFile_Sudoku(matrixFile, x, y):
+    print("creating matrixFile - sudoku")
     xy = x*y
     gridSize = xy*xy
-    matrixFile = "dance/ds1_%dx%d.txt" % (y, x)
     f = open(matrixFile, "w")
 
     for igrid in range(gridSize):
@@ -38,11 +47,11 @@ def initMatrixFile_Sudoku(x, y):
 # first xy columns are for which number is associated with the layout
 # next xy*xy columns refer to the layout's grid cell positions
 # filename is ds2_(y)x(x), s2 meaning the second matrix setup for sudoku
-def initMatrixFile_Sudoku2(x, y):
+def initMatrixFile_Sudoku2(matrixFile, x, y):
     # anything above 3x3 creates a ridiculously large matrixFile
+    print("creating matrixFile - sudoku 2")
     xy = x*y
-    fileName = "dance/ds2_%dx%d.txt" % (y, x)
-    f = open(fileName, "w")
+    f = open(matrixFile, "w")
 
     xlist = [i for i in range(x)]
     ylist = [i for i in range(y)]
@@ -193,13 +202,13 @@ def swap(A, i, j):
     for in Algorithm X
     
 """
-def initMatrixFile_NQueens(n):
+def initMatrixFile_NQueens(matrixFile, n):
+    print("creating matrixFile - n queens")
     n2 = pow(n, 2)
     diag2_start_index = 2*n - 3
     printDiag = 0
 
-    fileName = "dance/dq_%d.txt" % (n)
-    f = open(fileName, "w")
+    f = open(matrixFile, "w")
 
     for mrow in range(n2):
         rank = mrow // n
@@ -234,17 +243,17 @@ def initMatrixFile_NQueens(n):
 
     f.close()
 
-def initMatrixFile_SudokuFull(x, y):
+def initMatrixFile_SudokuO(matrixFile, x, y):
+    print("creating matrixFile - sudoku orientation")
     contSize = x*y
     sudokuSize = pow(contSize, 2)
-    matrixFile = "dance/dsf_%dx%d.txt" % (x, y)
     f = open(matrixFile, "w")
 
     for iSudoku in range(sudokuSize):
         sr = iSudoku // contSize
         sc = iSudoku % contSize
         sb1 = (sr // y) * y + sc // x
-        sb2 = (sc // x) * x + sr // y
+        sb2 = (sr // x) * x + sc // y
 
         for inum in range(contSize):
             mrow = iSudoku * contSize + inum
@@ -264,10 +273,17 @@ def initMatrixFile_SudokuFull(x, y):
     f.close()
 
 def main():
-    initMatrixFile_Sudoku(x=2, y=3)
-    #initMatrixFile_Sudoku2(x=3, y=2)
-    #initMatrixFile_NQueens(n=i)
-    initMatrixFile_SudokuFull(x=2, y=3)
 
+    print(sys.argv)
+    matrixFile = sys.argv[1]
+    problem = int(sys.argv[2])
+    if problem == SUDOKU or problem == SGEN:
+        initMatrixFile_Sudoku(matrixFile, int(sys.argv[3]), int(sys.argv[4]))
+    elif problem == SUDOKU2:
+        initMatrixFile_Sudoku2(matrixFile, int(sys.argv[3]), int(sys.argv[4]))
+    elif problem == NQUEENS:
+        initMatrixFile_NQueens(matrixFile, int(sys.argv[3]))
+    elif problem == SUDOKU_O or problem == SGEN_O:
+        initMatrixFile_SudokuO(matrixFile, int(sys.argv[3]), int(sys.argv[4]))
 if __name__ == "__main__":
     main()

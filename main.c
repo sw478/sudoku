@@ -7,7 +7,7 @@
 #include "error.h"
 #include "hide.h"
 #include "shuffle.h"
-#include "setMatrixDimensions.h"
+#include "matrixFile.h"
 #include "hrowCover.h"
 #include "initHrowLayout_Sudoku2.h"
 #include "saveSolution.h"
@@ -29,7 +29,8 @@ int main(int argc, char *argv[])
       case SUDOKU2: runSudoku2(d, argc, argv); break;
       case NQUEENS: runNQueens(d, argc, argv); break;
       case SGEN: runSudokuGen(d, argc, argv); break;
-      case SUDOKUF: runSudokuFull(d, argc, argv); break;
+      case SUDOKU_O: runSudokuO(d, argc, argv); break;
+      case SGEN_O: runSudokuOGen(d, argc, argv); break;
       default: break;
    }
 }
@@ -52,17 +53,13 @@ void checkConfig()
  */
 int runSudoku(Dance *d, int argc, char *argv[])
 {
-   char *matrixFile = malloc(BUFSIZE*sizeof(char));
-
    printSudokuBoard(d, d->s->grid);
 
    /* outdated, use matrixFileCreator.py for same results */
    //initMatrixFileSudoku(d);
 
    /* can set to custom matrixFile here */
-   sprintf(matrixFile, "dance/ds1_%dx%d.txt", d->s->y, d->s->x);
-   d->matrixFile = fopen(matrixFile, "r+");
-   free(matrixFile);
+   findMatrixFile(d);
 
    setMatrixDimensions_Sudoku(d);
 
@@ -107,13 +104,9 @@ int runSudoku(Dance *d, int argc, char *argv[])
 /* using layouts */
 int runSudoku2(Dance *d, int argc, char *argv[])
 {
-   char *matrixFile = malloc(BUFSIZE*sizeof(char));
-
    printSudokuBoard(d, d->s->grid);
  
-   sprintf(matrixFile, "dance/ds2_%dx%d.txt", d->s->y, d->s->x);
-   d->matrixFile = fopen(matrixFile, "r+");
-   free(matrixFile);
+   findMatrixFile(d);
 
    setMatrixDimensions_Sudoku2(d);
 
@@ -149,11 +142,7 @@ int runSudoku2(Dance *d, int argc, char *argv[])
 
 int runNQueens(Dance *d, int argc, char *argv[])
 {
-   char *matrixFile = malloc(BUFSIZE*sizeof(char));
- 
-   sprintf(matrixFile, "dance/dq_%d.txt", d->nq);
-   d->matrixFile = fopen(matrixFile, "r+");
-   free(matrixFile);
+   findMatrixFile(d);
 
    setMatrixDimensions_NQueens(d);
 
@@ -190,11 +179,7 @@ int runNQueens(Dance *d, int argc, char *argv[])
 
 int runSudokuGen(Dance *d, int argc, char *argv[])
 {
-   char *matrixFile = malloc(BUFSIZE*sizeof(char));
-
-   sprintf(matrixFile, "dance/ds1_%dx%d.txt", d->s->y, d->s->x);
-   d->matrixFile = fopen(matrixFile, "r+");
-   free(matrixFile);
+   findMatrixFile(d);
 
    setMatrixDimensions_Sudoku(d);
 
@@ -229,22 +214,15 @@ int runSudokuGen(Dance *d, int argc, char *argv[])
    return 0;
 }
 
-int runSudokuFull(Dance *d, int argc, char *argv[])
+int runSudokuO(Dance *d, int argc, char *argv[])
 {
-   char *matrixFile = malloc(BUFSIZE*sizeof(char));
-
    printSudokuBoard(d, d->s->grid);
 
-   /* can set to custom matrixFile here */
-   sprintf(matrixFile, "dance/dsf_%dx%d.txt", d->s->y, d->s->x);
-   d->matrixFile = fopen(matrixFile, "r+");
-   free(matrixFile);
+   findMatrixFile(d);
 
    setMatrixDimensions_SudokuFull(d);
 
    initDance(d);
-
-   /* reads from d->matrixFile and creates the general matrix */
    initMatrix(d);
    //printf("finished matrix\n");
    //printMatrix(d);
@@ -275,6 +253,43 @@ int runSudokuFull(Dance *d, int argc, char *argv[])
 
    //printMatrixDoublyMemory(d);
 
+   freeDance(d);
+
+   return 0;
+}
+
+int runSudokuOGen(Dance *d, int argc, char *argv[])
+{
+   findMatrixFile(d);
+
+   setMatrixDimensions_SudokuFull(d);
+
+   initDance(d);
+   initMatrix(d);
+
+   HEUR_INIT(d, d->s->xy)
+   
+   coverRowHeaders(d);
+
+   algorithmX_SGen1(d);
+   printf("number of calls: %d\n", d->numCalls);
+
+   uncoverRowHeaders(d);
+
+   /* setup generating mechanic */
+   saveSolution_Sudoku(d);
+   printSudokuBoard(d, d->s->grid);
+
+   initHide_Sudoku(d);
+
+   /* maximum number of clues you want for this puzzle */
+   d->numClues = d->s->gridSize / 2;
+   if(generate(d) == NOT_FOUND)
+      printf("No puzzles found\n");
+   printSudokuBoard(d, d->s->grid);
+   printToSudokuFile(d);
+
+   unfillAllCells(d);
    freeDance(d);
 
    return 0;
