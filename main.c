@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
       case SUDOKU2: runSudoku2(d, argc, argv); break;
       case NQUEENS: runNQueens(d, argc, argv); break;
       case SGEN: runSudokuGen(d, argc, argv); break;
+      case SUDOKUF: runSudokuFull(d, argc, argv); break;
       default: break;
    }
 }
@@ -54,11 +55,6 @@ int runSudoku(Dance *d, int argc, char *argv[])
    char *matrixFile = malloc(BUFSIZE*sizeof(char));
 
    printSudokuBoard(d, d->s->grid);
-
-   printf("size of hide: %d\n", ((int)sizeof(Hide)));
-   printf("size of doubly: %d\n", ((int)sizeof(Doubly)));
-   printf("size of heur: %d\n", ((int)sizeof(Heur)));
-   printf("size of solTree: %d\n", ((int)sizeof(SolTree)));
 
    /* outdated, use matrixFileCreator.py for same results */
    //initMatrixFileSudoku(d);
@@ -88,7 +84,7 @@ int runSudoku(Dance *d, int argc, char *argv[])
    coverRowHeaders(d);
    //printf("finished cover\n");
 
-   //printf("starting algX\n");
+   printf("starting algX\n");
    algorithmX(d);
    printf("number of calls: %d\n", d->numCalls);
 
@@ -228,6 +224,57 @@ int runSudokuGen(Dance *d, int argc, char *argv[])
    printToSudokuFile(d);
 
    unfillAllCells(d);
+   freeDance(d);
+
+   return 0;
+}
+
+int runSudokuFull(Dance *d, int argc, char *argv[])
+{
+   char *matrixFile = malloc(BUFSIZE*sizeof(char));
+
+   printSudokuBoard(d, d->s->grid);
+
+   /* can set to custom matrixFile here */
+   sprintf(matrixFile, "dance/dsf_%dx%d.txt", d->s->y, d->s->x);
+   d->matrixFile = fopen(matrixFile, "r+");
+   free(matrixFile);
+
+   setMatrixDimensions_SudokuFull(d);
+
+   initDance(d);
+
+   /* reads from d->matrixFile and creates the general matrix */
+   initMatrix(d);
+   //printf("finished matrix\n");
+   //printMatrix(d);
+
+   HEUR_INIT(d, d->s->xy)
+
+   /* hides the necessary rows in the matrix to define the puzzle, reading from sudoku file */
+   initHide_Sudoku(d);
+   fillAllCells(d);
+   //printf("finished hide\n");
+   
+   /* covers row headers from rest of matrix */
+   coverRowHeaders(d);
+   //printf("finished cover\n");
+
+   printf("starting algX\n");
+   algorithmX(d);
+   printf("number of calls: %d\n", d->numCalls);
+
+   uncoverRowHeaders(d);
+
+   unfillAllCells(d);
+
+   printSolutions_Sudoku(d);
+
+   /* translates solTree matrix rows to sudoku solution */
+   saveSolution_Sudoku(d);
+
+   //printMatrixDoublyMemory(d);
+
    freeDance(d);
 
    return 0;

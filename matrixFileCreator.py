@@ -30,8 +30,10 @@ def initMatrixFile_Sudoku(x, y):
     rmax = xy*gridSize
     cmax = 4*gridSize
 
+    print("rmax: " + repr(rmax))
+    print("cmax: " + repr(cmax))
+
     f.close()
-    return rmax, cmax
 
 # first xy columns are for which number is associated with the layout
 # next xy*xy columns refer to the layout's grid cell positions
@@ -232,11 +234,40 @@ def initMatrixFile_NQueens(n):
 
     f.close()
 
+def initMatrixFile_SudokuFull(x, y):
+    contSize = x*y
+    sudokuSize = pow(contSize, 2)
+    matrixFile = "dance/dsf_%dx%d.txt" % (x, y)
+    f = open(matrixFile, "w")
+
+    for iSudoku in range(sudokuSize):
+        sr = iSudoku // contSize
+        sc = iSudoku % contSize
+        sb1 = (sr // y) * y + sc // x
+        sb2 = (sc // x) * x + sr // y
+
+        for inum in range(contSize):
+            mrow = iSudoku * contSize + inum
+
+            f.write("%d %d\n" % (mrow, iSudoku))
+            f.write("%d %d\n" % (mrow, inum + sr * contSize + sudokuSize * 1))
+            f.write("%d %d\n" % (mrow, inum + sc * contSize + sudokuSize * 2))
+            f.write("%d %d\n" % (mrow, inum + sb1 * contSize + sudokuSize * 3))
+            f.write("%d %d\n" % (mrow, inum + sb2 * contSize + sudokuSize * 4))
+
+    rmax = contSize*sudokuSize
+    cmax = 5*sudokuSize
+
+    print("rmax: " + repr(rmax))
+    print("cmax: " + repr(cmax))
+
+    f.close()
 
 def main():
-    #initMatrixFile_Sudoku(x=2, y=2)
-    initMatrixFile_Sudoku2(x=3, y=2)
+    initMatrixFile_Sudoku(x=2, y=3)
+    #initMatrixFile_Sudoku2(x=3, y=2)
     #initMatrixFile_NQueens(n=i)
+    initMatrixFile_SudokuFull(x=2, y=3)
 
 if __name__ == "__main__":
     main()

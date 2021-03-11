@@ -17,6 +17,7 @@
 #define SUDOKU2 1
 #define NQUEENS 2
 #define SGEN 3
+#define SUDOKUF 4
 
 /* for algX and generate */
 #define FOUND 1

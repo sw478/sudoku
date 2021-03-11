@@ -15,13 +15,16 @@ void parseArgs(Dance *d, int argc, char *argv[])
         d->problem = NQUEENS;
     else if(!strcmp(argv[1], "g"))
         d->problem = SGEN;
+    else if(!strcmp(argv[1], "f"))
+        d->problem = SUDOKUF;
     else
         arg1Error();
 
     switch(d->problem)
     {
         case SUDOKU:
-        case SUDOKU2: parseArgs_Sudoku(d, argc, argv); break;
+        case SUDOKU2:
+        case SUDOKUF: parseArgs_Sudoku(d, argc, argv); break;
         case NQUEENS: parseArgs_NQueens(d, argc, argv); break;
         case SGEN: parseArgs_SGen(d, argc, argv); break;
     }

@@ -20,9 +20,10 @@ elif [ "$type" = "b" ] || [ "$type" = "t" ] || [ "$type" = "v" ]; then
    echo "\"s2\" for sudoku2"
    echo "\"q\" for n queens"
    echo "\"g\" for generating sudoku"
+   echo "\"f\" for sudoku full"
    read problem
 
-   if [ "$problem" = "s" ] || [ "$problem" = "s2" ]; then
+   if [ "$problem" = "s" ] || [ "$problem" = "s2" ] || [ "$problem" = "f" ]; then
       echo "dimension? \"x\" \"y\""
       read x y
       

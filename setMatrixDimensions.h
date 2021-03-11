@@ -3,6 +3,7 @@
 #include "struct.h"
 
 void setMatrixDimensions_Sudoku(Dance *d);
+void setMatrixDimensions_SudokuFull(Dance *d);
 void setMatrixDimensions_Sudoku2(Dance *d);
 void setMatrixDimensions_NQueens(Dance *d);
 

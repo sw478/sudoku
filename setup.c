@@ -7,12 +7,6 @@
 /* initialize values and structures in the dance struct */
 int initDance(Dance *d)
 {
-   if(d->problem == SUDOKU || d->problem == SUDOKU2)
-   {
-      d->s->xy = d->s->x*d->s->y;
-      d->s->gridSize = d->s->xy*d->s->xy;
-   }
-
    d->numSols = 0;
    d->solCap = STARTING_CAP;
    d->sols = malloc(d->solCap*sizeof(SolTree));
