@@ -12,6 +12,10 @@ program can be used to solve those other problems, such as polynomino tiling and
 
 ![seppuku](images/sudoku_seppuku.png)
 
+## unistd_io.h
+
+Create a file of this name that includes io.h if running on windows or unistd.h if on linux
+
 ## process (sudoku)
 
 The program reads from a file of a sudoku to solve, as well as a matrixFile that contains coordinates for the
