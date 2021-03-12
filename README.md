@@ -1,4 +1,5 @@
 # sudoku
+[![HitCount](http://hits.dwyl.com/sw478/sudoku.svg)](http://hits.dwyl.com/sw478/sudoku)
 
 This project features a sudoku solver written in C. C was chosen since a good portion of this code takes advantage
 of pointer logic. Using Donald Knuth's Algorithm X and a dancing links data structure, we are able to solve this
